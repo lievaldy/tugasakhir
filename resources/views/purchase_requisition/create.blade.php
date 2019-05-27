@@ -299,8 +299,8 @@
     });
 
     var data = {
-        types : ['Material','Resource','Subcon'],
-        pr_type : "Material",
+        types : ['Resource'],
+        pr_type : "Resource",
         isResource : "",
         description : "",
         required_date : "",
