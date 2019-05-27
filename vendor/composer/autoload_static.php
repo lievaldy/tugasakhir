@@ -443,6 +443,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\Material' => __DIR__ . '/../..' . '/app/Models/Material.php',
         'App\\Models\\MaterialRequisition' => __DIR__ . '/../..' . '/app/Models/MaterialRequisition.php',
         'App\\Models\\MaterialRequisitionDetail' => __DIR__ . '/../..' . '/app/Models/MaterialRequisitionDetail.php',
+        'App\\Models\\MaterialSummary' => __DIR__ . '/../..' . '/app/Models/MaterialSummary.php',
         'App\\Models\\MaterialWriteOff' => __DIR__ . '/../..' . '/app/Models/MaterialWriteOff.php',
         'App\\Models\\MaterialWriteOffDetail' => __DIR__ . '/../..' . '/app/Models/MaterialWriteOffDetail.php',
         'App\\Models\\Menu' => __DIR__ . '/../..' . '/app/Models/Menu.php',

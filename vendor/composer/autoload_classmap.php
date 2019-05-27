@@ -87,6 +87,7 @@ return array(
     'App\\Models\\Material' => $baseDir . '/app/Models/Material.php',
     'App\\Models\\MaterialRequisition' => $baseDir . '/app/Models/MaterialRequisition.php',
     'App\\Models\\MaterialRequisitionDetail' => $baseDir . '/app/Models/MaterialRequisitionDetail.php',
+    'App\\Models\\MaterialSummary' => $baseDir . '/app/Models/MaterialSummary.php',
     'App\\Models\\MaterialWriteOff' => $baseDir . '/app/Models/MaterialWriteOff.php',
     'App\\Models\\MaterialWriteOffDetail' => $baseDir . '/app/Models/MaterialWriteOffDetail.php',
     'App\\Models\\Menu' => $baseDir . '/app/Models/Menu.php',
