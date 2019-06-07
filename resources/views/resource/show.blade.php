@@ -1126,11 +1126,11 @@
                         this.data.lt_uom = RD.lifetime_uom_id;
                         let lt = 0;
                         if(RD.lifetime_uom_id == 1){
-                            lt = RD.lifetime/8;
+                            lt = RD.lifetime;
                         }else if(RD.lifetime_uom_id == 2){
-                            lt = (RD.lifetime/8)/30;
+                            lt = (RD.lifetime)/30;
                         }else if(RD.lifetime_uom_id == 3){
-                            lt = (RD.lifetime/8)/365;
+                            lt = (RD.lifetime)/365;
                         }
                         this.data.lt = (lt+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         lifetime = RD.lifetime;
@@ -1142,11 +1142,11 @@
                         this.data.lt_uom = RD.lifetime_uom_id;
                         let lt = 0;
                         if(RD.lifetime_uom_id == 1){
-                            lt = RD.lifetime/8;
+                            lt = RD.lifetime;
                         }else if(RD.lifetime_uom_id == 2){
-                            lt = (RD.lifetime/8)/30;
+                            lt = (RD.lifetime)/30;
                         }else if(RD.lifetime_uom_id == 3){
-                            lt = (RD.lifetime/8)/365;
+                            lt = (RD.lifetime)/365;
                         }
                         this.data.lt = (lt+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         lifetime = RD.lifetime;

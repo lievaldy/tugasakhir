@@ -190,12 +190,18 @@ class ResourceController extends Controller
                 $RD->lifetime_uom_id = ($data->lifetime_uom_id != '') ? $data->lifetime_uom_id : null;
                 if($RD->lifetime_uom_id != null){
                     if($data->lifetime != ''){
+                        $date = date("Y-m-d");
+                        $date = strtotime($date);
+
                         if($RD->lifetime_uom_id == 1){
-                            $RD->lifetime = $data->lifetime * 8;
+                            $RD->lifetime = $data->lifetime;
+                            $RD->return_date = date("Y-m-d",strtotime("+".$RD->lifetime."day", $date));
                         }elseif($RD->lifetime_uom_id == 2){
-                            $RD->lifetime = $data->lifetime * 8 * 30;
+                            $RD->lifetime = $data->lifetime * 30;
+                            $RD->return_date = date("Y-m-d",strtotime("+".$RD->lifetime."day", $date));
                         }elseif($RD->lifetime_uom_id == 3){
-                            $RD->lifetime = $data->lifetime * 8 * 365;
+                            $RD->lifetime = $data->lifetime * 365;
+                            $RD->return_date = date("Y-m-d",strtotime("+".$RD->lifetime."day", $date));
                         }
                     }
                 }
@@ -424,11 +430,11 @@ class ResourceController extends Controller
             if($modelRD->lifetime_uom_id != null){
                 if($data['lifetime'] != ''){
                     if($modelRD->lifetime_uom_id == 1){
-                        $modelRD->lifetime = $data['lifetime'] * 8;
+                        $modelRD->lifetime = $data['lifetime'];
                     }elseif($modelRD->lifetime_uom_id == 2){
-                        $modelRD->lifetime = $data['lifetime'] * 8 * 30;
+                        $modelRD->lifetime = $data['lifetime'] * 30;
                     }elseif($modelRD->lifetime_uom_id == 3){
-                        $modelRD->lifetime = $data['lifetime'] * 8 * 365;
+                        $modelRD->lifetime = $data['lifetime'] * 365;
                     }
                 }
             }
@@ -679,11 +685,11 @@ class ResourceController extends Controller
                 if($RD->lifetime_uom_id != null){
                     if($data->lifetime != ''){
                         if($RD->lifetime_uom_id == 1){
-                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 : null;
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime : null;
                         }elseif($RD->lifetime_uom_id == 2){
-                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 * 30 : null;
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 30 : null;
                         }elseif($RD->lifetime_uom_id == 3){
-                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 8 * 365 : null;
+                            $RD->lifetime = ($data->lifetime != '') ? $data->lifetime * 365 : null;
                         }
                     }
                 }
