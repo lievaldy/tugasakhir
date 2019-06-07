@@ -438,6 +438,16 @@ class ResourceController extends Controller
                     }
                 }
             }
+            if($data['maintenance'] == "Yes"){
+                $modelRD->status = 3;
+            }else{
+                if($modelRD->status == 2){
+                    $modelRD->status = 2;
+                }else{
+                    $modelRD->status = 1;
+                }
+            }
+            // print_r($modelRD->status);exit();
             if($data['lifetime_uom_id'] == '' || $data['lifetime'] == ''){
                 $modelRD->lifetime = null;
                 $modelRD->lifetime_uom_id = null;

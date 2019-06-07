@@ -68,8 +68,8 @@
                                     <th width="5%">No</th>
                                     <th width="25%">Code</th>
                                     <th width="30%">Brand</th>
-                                    <th width="20%">Type</th>
-                                    <th width="10%">Status</th>
+                                    <th width="15%">Type</th>
+                                    <th width="15%">Status</th>
                                     <th width="10%"></th>
                                 </tr>
                             </thead>
@@ -85,7 +85,8 @@
                                     <td v-else-if="rd.category_id == 4">Internal Equipment</td>
                                     <td v-if="rd.status == 1">IDLE</td>
                                     <td v-else-if="rd.status == 2">USED</td>
-                                    <td v-else-if="rd.status == 0">NOT ACTIVE</td>
+                                    <td v-else-if="rd.status == 0">UNAVAILABLE</td>
+                                    <td v-else-if="rd.status == 3">MAINTENANCE</td>
                                     <td>
                                         <a @click.prevent="showDetail(rd.id)" class="btn btn-primary btn-xs">
                                             <div class="btn-group">
@@ -256,7 +257,7 @@
 
 
                     <div class="modal fade" id="edit_info">
-                        <div class="modal-dialog modalFull">
+                        <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -494,7 +495,12 @@
                                                     <option v-for="(depreciation_method, index) in depreciation_methods" :value="depreciation_method.id">{{ depreciation_method.name }} </option>
                                                 </selectize>
                                             </div>
-                                            
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Maintenance</label>
+                                                <select class="form-control" v-model="editInput.maintenance" >
+                                                    <option v-for="(stat, index) in status" :value="stat">{{ stat }} </option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -550,6 +556,7 @@
     });
 
     var data = {
+        status : ['Yes','No'],
         route : @json($route),
         modelRD : @json($modelRD),
         depreciation_methods : @json($depreciation_methods),
@@ -635,6 +642,9 @@
             depreciation_method : 0,
             cost_per_hour : "",
             resource_detail_id : "",
+
+            maintenance : "",
+            status : "",
         },
         uomSettings: {
             placeholder: 'Please Select UOM'
@@ -742,7 +752,6 @@
             this.editInput.width = parseInt((this.editInput.width+"").replace(/,/g , ''));
             this.editInput.height = parseInt((this.editInput.height+"").replace(/,/g , ''));
             let data = this.editInput;
-
             if(this.route == "/resource"){
                 var url = "{{ route('resource.updateDetail') }}";
             }else if(this.route == "/resource_repair"){
@@ -777,6 +786,7 @@
         },
         clearEditData(){
             this.editInput.category_id = '';
+            this.editInput.maintenance = '';
             this.editInput.code = '';
             this.editInput.description = '';
             this.editInput.pod_id = '';
@@ -804,6 +814,7 @@
             this.editInput.length = '',
             this.editInput.width = '',
             this.editInput.height = ''
+            this.editInput.status = ''
         },
         openEditModal(category_id){
             this.clearEditData();
@@ -812,13 +823,14 @@
                 if(resource_category.id == category_id){
                     this.category = resource_category.name;
                     this.editInput.category_id = category_id;
+                    this.editInput.status = this.data.status;
                     this.editInput.code = this.data.code;
                     this.editInput.description = this.data.description;
                     this.editInput.lifetime = this.data.lt;
                     this.editInput.lifetime_uom_id = this.data.lt_uom;
                     this.editInput.performance = this.data.perf;
                     this.editInput.performance_uom_id = this.data.perf_uom;
-
+                    
                     if(category_id == 1){
                         this.editInput.sub_con_address = this.data.address;
                         this.editInput.sub_con_phone = this.data.phone;
@@ -826,6 +838,7 @@
                     }else if(category_id == 2){
                         this.editInput.name = this.data.other_name;
                     }else if(category_id == 3){
+                        
                         this.editInput.brand = this.data.brand;
                     }else if(category_id == 4){
                         this.editInput.brand = this.data.brand;
@@ -845,12 +858,17 @@
                         this.editInput.height = this.data.height;
                         this.editInput.manufactured_in = this.data.manufactured_in;
                         
-
+                        if(this.data.status != "MAINTENANCE" ){
+                            this.editInput.maintenance = "No";
+                        }else{
+                            this.editInput.maintenance = "Yes";
+                        }
                     }
                 }
             });
         },
         clearData(){
+            this.data.category_id = "";
             this.data.category_id = "";
             this.data.selectedId = "";
             this.data.code = "";
@@ -943,6 +961,8 @@
                         this.data.status = "IDLE";
                     }else if(RD.status == 2){
                         this.data.status = "USED";
+                    }else if(RD.status == 3){
+                        this.data.status = "MAINTENANCE";
                     }
 
                     let performance = 0;
@@ -1086,6 +1106,19 @@
         'editInput.height': function(newValue) {
                 this.editInput.height = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
+        'editInput.maintenance': function(newValue){
+            if(newValue == "Yes"){
+                if(this.editInput.status == "USED"){
+                    this.editInput.maintenance = "No";
+                    newValue = "No";
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "This equipment still used in another WBS!",
+                        position: 'topRight',
+                    });
+                }
+            }
+        }
     }
     });
 
