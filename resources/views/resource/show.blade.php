@@ -191,7 +191,7 @@
                                             <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.brand}}</b></div>
     
                                             <div class="col-md-6 col-xs-6 no-padding">Type</div>
-                                            <div class="col-md-6 col-xs-6 no-padding"><b>: {{data.type}}</b></div>
+                                            <div class="col-md-6 col-xs-6 no-padding tdEllipsis"><b>: {{data.type}}</b></div>
     
                                             <div class="col-md-6 col-xs-6 no-padding">Description</div>
                                             <div class="col-md-6 col-xs-6 no-padding tdEllipsis"><b>: {{(data.description != '') ? data.description : '-'}}</b></div>
@@ -254,101 +254,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="box box-solid box-default m-b-0">
-                                        <div class="box-body">
-                                            <div class="col-lg-3 no-padding">
-                                                <div class="col-md-12 col-xs-12 no-padding"><b>Planned</b></div>
-                                                <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{data.performance}}</b></div>
-                                                </div>
-                                                <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding" v-if="data.category_id != 4"><b>: {{data.rental_duration}}</b></div>
-                                                    <div class="col-md-8 col-xs-8 no-padding" v-else-if="data.category_id == 4"><b>: {{data.lifetime}}</b></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-3 no-padding">
-                                                <div class="col-md-12 col-xs-12 no-padding"><b>Actual</b></div>
-                                                <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{(data.total_performance) ? data.total_performance : '-' }}</b></div>
-                                                </div>
-                                                <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-4 col-xs-4 no-padding">Duration</div>
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>: {{(data.total_usage) ? data.total_usage : '-'}}</b></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-3 no-padding">
-                                                <div class="col-md-12 col-xs-12 no-padding"><b>Utilization</b></div>
-                                                <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>{{ (data.utilization) ? data.utilization : "0.00"}} %</b></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-3 no-padding">
-                                                <div class="col-md-12 col-xs-12 no-padding"><b>Productivity</b></div>
-                                                <div class="col-md-12 col-xs-12 no-padding">
-                                                    <div class="col-md-8 col-xs-8 no-padding"><b>{{ (data.avg_productivity) ? data.avg_productivity : "0.00"}} %</b></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <template v-if="data.prod_order_detail.length > 0">
-                                        <div class="box-body p-l-0 p-b-0">
-                                            <h4>Usage History</h4>
-                                        </div>
-                                        <template v-for="prod_order_detail in data.prod_order_detail">
-                                            <div class="box box-solid box-default">
-                                                <div class="box-body">
-                                                    <div class="col-lg-4 no-padding">
-                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Information</b></div>
-                                                        <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">WBS</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.wbs.code}}</b></div>
-                                                        </div>
-                                                        <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Prod. Order</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.number}}</b></div>
-                                                        </div>
-                                                        <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Status</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.prod_order_status}}</b></div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-4 no-padding">
-                                                        <br>
-                                                        <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Performance</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.performance != null) ? prod_order_detail.performance+' '+prod_order_detail.performance_uom.unit : '-'}}</b></div>
-                                                        </div>
-                                                        <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Usage</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.usage != null) ? prod_order_detail.usage+' Hour(s)' : '-'}}</b></div>
-                                                        </div>
-                                                        <div class="col-md-12 col-xs-12 no-padding" v-if="prod_order_detail.resource_detail.category_id == 1">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Accident</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.actual != null) ? prod_order_detail.actual+' Time(s)' : '-'}}</b></div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="col-lg-4 no-padding">
-                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Productivity</b></div>
-                                                        <div class="col-md-12 no-padding" v-if="prod_order_detail.performance == null"><b>-</b></div>
-                                                        <div class="col-md-12 no-padding" v-else-if="prod_order_detail.usage == null"><b>-</b></div>
-                                                        <div class="col-md-12 no-padding" v-else-if="prod_order_detail.usage != null && prod_order_detail.performance != null"><b>{{ (prod_order_detail.performance/prod_order_detail.usage).toFixed(2)+' '+prod_order_detail.performance_uom.unit+' / Hour' }}</b></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="modal fade" id="edit_info">
                         <div class="modal-dialog modalFull">
@@ -496,23 +401,7 @@
                                                 <label for="description" class="control-label">Description</label>
                                                 <input type="text" id="description" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
                                             </div>
-                                            <div class="col-sm-12">
-                                                <div class="col-sm-12 no-padding">
-                                                    <label for="performance" class="control-label">Performance</label>
-                                                </div>
-                                                <div class="col-sm-3 no-padding p-r-10">
-                                                    <input type="text" id="performance" v-model="editInput.performance" :disabled="performanceOk" class="form-control" placeholder="Performance">
-
-                                                </div>
-                                                <div class="col-sm-3 no-padding">
-                                                    <selectize v-model="editInput.performance_uom_id" :settings="uomSettings">
-                                                        <option v-for="(data, index) in uom" :value="data.id">{{ data.unit }} </option>
-                                                    </selectize>
-                                                </div>
-                                                <div class="col-sm-6 p-t-8">
-                                                    Per Hour
-                                                </div>
-                                            </div>
+                                            
                                         </div>
 
                                         <div v-show="editInput.category_id == '4'">
@@ -605,22 +494,7 @@
                                                     <option v-for="(depreciation_method, index) in depreciation_methods" :value="depreciation_method.id">{{ depreciation_method.name }} </option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-12">
-                                                <div class="col-sm-12 no-padding">
-                                                    <label for="performance" class="control-label">Performance</label>
-                                                </div>
-                                                <div class="col-sm-3 no-padding p-r-10">
-                                                    <input type="text" id="performance" v-model="editInput.performance" :disabled="performanceOk" class="form-control" placeholder="Performance">
-                                                </div>
-                                                <div class="col-sm-3 no-padding">
-                                                    <selectize v-model="editInput.performance_uom_id" :settings="uomSettings">
-                                                        <option v-for="(data, index) in uom" :value="data.id">{{ data.unit }} </option>
-                                                    </selectize>
-                                                </div>
-                                                <div class="col-sm-6 p-t-8">
-                                                    Per Hour
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
