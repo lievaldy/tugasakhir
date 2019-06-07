@@ -276,18 +276,6 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-         DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'PR Consolidation',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_requisition.indexConsolidation',
-            'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=>$purchaseRequisition,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Purchase Order',
@@ -1170,115 +1158,9 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
         
-        $materialManagement =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Purchase Requisition',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$materialManagement,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        
 
-        $purchaseRequisition =  Menu::where('name','Purchase Requisition')->where('menu_id',$materialManagement)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Create PR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_requisition_repair.create',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseRequisition,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Approve PR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_requisition_repair.indexApprove',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseRequisition,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'View & Edit PR',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_requisition_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseRequisition,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-         DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'PR Consolidation',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_requisition_repair.indexConsolidation',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseRequisition,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Purchase Order',
-            'icon' => 'fa-file-text-o',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$materialManagement,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-
-        $purchaseOrder =  Menu::where('name','Purchase Order')->where('menu_id',$materialManagement)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Create PO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_order_repair.selectPR',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseOrder,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Approve PO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_order_repair.indexApprove',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseOrder,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'View & Edit PO',
-            'icon' => 'fa-file-text-o',
-            'route_name'=> 'purchase_order_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=>$purchaseOrder,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        
 
         DB::table('menus')->insert([
             'level' => 3,
@@ -1771,6 +1653,103 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Purchase Requisition',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $purchaseRequisition =  Menu::where('name','Purchase Requisition')->where('menu_id',$resourcemanagementRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create PR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve PR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit PR',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_requisition_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Purchase Order',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$resourcemanagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+
+        $purchaseOrder =  Menu::where('name','Purchase Order')->where('menu_id',$resourcemanagementRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create PO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_order_repair.selectPR',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$purchaseOrder,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Approve PO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_order_repair.indexApprove',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$purchaseOrder,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit PO',
+            'icon' => 'fa-file-text-o',
+            'route_name'=> 'purchase_order_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=>$purchaseOrder,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

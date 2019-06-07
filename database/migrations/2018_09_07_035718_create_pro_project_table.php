@@ -23,7 +23,6 @@ class CreateProProjectTable extends Migration
             $table->unsignedInteger('ship_id');
             $table->unsignedInteger('customer_id');
             $table->string('name')->nullable();
-            $table->string('hull_number')->nullable();
             $table->string('person_in_charge')->nullable();
             $table->text('description')->nullable();
             $table->unsignedInteger('sales_order_id')->nullable();
