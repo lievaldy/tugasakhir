@@ -114,23 +114,18 @@
                                                 </selectize>
                                             </td>
             
-                                            <td class="no-padding" v-show="dataInput.category_id == 4 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
+                                            <td class="no-padding" v-show="dataInput.category_id == 3 && dataInput.resource_id == '' || dataInput.category_id == 4 && dataInput.resource_id == '' || dataInput.category_id == '' && dataInput.resource_id == ''">
                                                 <selectize id="material" v-model="dataInput.null" :settings="nullResourceSettings" disabled>
                                                     <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </td>
-                                            <td class="no-padding" v-show="dataInput.category_id != 4 && dataInput.category_id != ''">
-                                                <selectize id="material" v-model="dataInput.null" :settings="otherSettings" disabled>
-                                                    <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 4 && dataInput.resource_id != '' && selectedRD.length < 1">
-                                                <selectize v-model="dataInput.null" :settings="nullRdSettings" disabled>
-                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }}</option>
-                                                </selectize>
-                                            </td>
-                                            <td class="p-l-0 textLeft" v-show="dataInput.category_id == 4 && dataInput.resource_id != '' && selectedRD.length > 0">
+                                            <td class="p-l-0 textLeft" v-show="dataInput.resource_id != '' && selectedRD.length > 0">
                                                 <selectize v-model="dataInput.resource_detail_id" :settings="resourceDetailSettings">
+                                                    <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
+                                                </selectize>
+                                            </td>
+                                            <td class="p-l-0 textLeft" v-show="dataInput.resource_id != '' && selectedRD.length < 1">
+                                                <selectize v-model="dataInput.resource_detail_id" :settings="nullRdSettings" disabled>
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                 </selectize>
                                             </td>
@@ -456,7 +451,7 @@
             editResource: function(){
                 let isOk = false;
 
-                if(this.editInput.category_id == 4){
+                if(this.editInput.category_id == 4 || this.editInput.category_id == 3){
                     if(this.editInput.resource_detail_id != "" && this.editInput.resource_detail_id != null){
                         isOk = true;
                     }
@@ -646,7 +641,7 @@
                 });
             },
             inputSchedule(){
-                if(this.dataInput.category_id == 4 && this.dataInput.resource_detail_id != ""){
+                if(this.dataInput.category_id == 4 && this.dataInput.resource_detail_id != "" || this.dataInput.category_id == 3 && this.dataInput.resource_detail_id != ""){
                     $('#input_schedule').modal();
                 }else{
                     this.add();
@@ -732,7 +727,7 @@
                 window.axios.get('/api/getAllResourceTrx').then(({ data }) => {
                     this.resourceTrx = data;
                     let status = false;
-                    if(this.dataInput.category_id == 4){
+                    if(this.dataInput.category_id == 4 || this.dataInput.category_id == 3){
                         let start_date = this.dataInput.start_date;
                         this.resourceTrx.forEach(TrxResource =>{
                             if(TrxResource.resource_detail_id == this.dataInput.resource_detail_id){
@@ -933,7 +928,7 @@
                 if(newValue != ''){
                     this.schedule.selectedRD = [];
                     this.resourceDetails.forEach(RD => {
-                        if(RD.resource_id == newValue && RD.category_id == 4){
+                        if(RD.resource_id == newValue && RD.category_id == 4 || RD.resource_id == newValue && RD.category_id == 3){
                             this.schedule.selectedRD.push(RD);
                         }  
                     });
@@ -978,10 +973,10 @@
                 }
             },
             'editInput.resource_id' : function(newValue){
-                if(this.editInput.category_id == 4){
+                if(this.editInput.category_id == 4 || this.editInput.category_id == 3){
                     this.selectedRDModal = [];
                     this.resourceDetails.forEach(data => {
-                        if(data.resource_id == newValue && data.category_id == 4){
+                        if(data.resource_id == newValue && data.category_id == 4 || data.resource_id == newValue && data.category_id == 3){
                             this.selectedRDModal.push(data);
                         }
                     })
@@ -989,11 +984,10 @@
                         this.editInput.resource_detail_id = '';
                     }
                 }
-                
             },
             'editInput.resource_detail_id' : function(newValue){
                 if(newValue != "" && newValue != null){
-                    if(this.editInput.category_id == 4){
+                    if(this.editInput.category_id == 4 || this.editInput.category_id == 3){
                         this.editInput.quantity = 1;
                     }
                 }             

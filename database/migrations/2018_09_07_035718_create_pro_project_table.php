@@ -26,7 +26,6 @@ class CreateProProjectTable extends Migration
             $table->string('hull_number')->nullable();
             $table->string('person_in_charge')->nullable();
             $table->text('description')->nullable();
-            $table->string('hull_number')->nullable();
             $table->unsignedInteger('sales_order_id')->nullable();
             $table->date('planned_start_date')->nullable();
             $table->date('planned_end_date')->nullable();
