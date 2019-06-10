@@ -481,81 +481,17 @@
                                     </button>
                                     <h4 class="modal-title">Input Actual Resource's Performance</h4>
                                 </div>
-                                <div class="modal-body p-t-0">
+
+                                <div class="modal-body">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <div class="col-sm-6 p-l-0">
-                                                <label for="type" class="control-label p-b-10">Performance</label>
-                                                <input class="form-control" v-model="editInput.performance" placeholder="Please Input Performance">
-                                            </div>
-                                            <div class="col-sm-6 no-padding">
-                                                <label for="type" class="control-label p-b-10">Unit</label>
-                                                <template v-if="editInput.statusUom == ''">
-                                                    <selectize id="edit_modal" v-model="editInput.performance_uom_id" :settings="uomSettings">
-                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                    </selectize>
-                                                </template>
-                                                <template v-else-if="editInput.statusUom == 'exist'">
-                                                    <selectize id="edit_modal" v-model="editInput.performance_uom_id" :settings="uomSettings" disabled>
-                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                    </selectize>
-                                                </template>
-                                            </div>
+                                            <label class="control-label">Schedule</label>
+                                            <input v-model="dataInput.schedule" type="text" name="daterange" id="daterange" class="form-control" placeholder="Please Input Schedule (Optional)" autocomplete="off"/>
                                         </div>
-                                        <div class="col-sm-12">
-                                            <div class="col-sm-6 p-l-0">
-                                                <label for="type" class="control-label p-b-10">Usage</label>
-                                                <input class="form-control width100" v-model="editInput.usage" placeholder="Please Input Usage">
-                                            </div>
-                                            <div class="col-sm-6 p-t-45 p-l-0">
-                                                Hour(s)
-                                            </div>
-                                        </div>
-                                        <template v-if="editInput.category_id == 0">
-                                            <div class="col-sm-12">
-                                                <div class="col-sm-6 p-l-0">
-                                                    <label for="type" class="control-label p-b-10">Total Accident</label>
-                                                    <input class="form-control width100" v-model="editInput.total_accident" placeholder="Please Input Total Accident">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-12">
-                                                <label for="type" class="control-label p-b-10">Morale Notes</label>
-                                                <table id="morale-table" class="table table-bordered tableFixed">
-                                                    <thead>
-                                                        <tr>
-                                                            <th width="5%">No</th>
-                                                            <th width="25%">Subject</th>
-                                                            <th width="35%">Notes</th>
-                                                            <th width="20%"></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(data,index) in resources[editInput.index].morale">
-                                                            <td>{{ index + 1 }}</td>
-                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.subject)">{{ data.subject }}</td>
-                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.notes)">{{ data.notes }}</td>
-                                                            <td class="p-l-5" align="center"><a @click.prevent="editMoraleNotes(data,index)" class="btn btn-primary btn-xs" href="#morale_notes" data-toggle="modal">
-                                                                <button type="button" data-dismiss="modal" class="btn btn-primary btn-xs" @click.prevent="">
-                                                                    EDIT
-                                                                </button></a>
-                                                                <a href="#" @click="removeMoraleNotes(index)" class="btn btn-danger btn-xs">
-                                                                    <div class="btn-group">DELETE</div>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </template>
                                     </div>
                                 </div>
+
                                 <div class="modal-footer">
-                                    <a href="#morale_notes" data-toggle="modal">
-                                        <button type="button" data-dismiss="modal" class="btn btn-primary" @click.prevent="">
-                                            ADD NOTES
-                                        </button>
-                                    </a>
                                     <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
                                 </div>
                             </div>

@@ -173,10 +173,10 @@
                     <table id="resource-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
                         <thead>
                             <tr>
-                                <th width="5%">No</th>
-                                <th width="30%">Resource Name</th>
-                                <th width="28%">Description</th>
-                                <th width="18%">Operational Resource</th>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 15%">Category</th>
+                                <th style="width: 25%">Resource</th>
+                                <th style="width: 25%">Resource Detail</th>
                                 <th width="12%">Status</th>
                                 <th width="7%"></th>
                             </tr>
@@ -184,14 +184,24 @@
                         <tbody>
                             <tr v-for="(data,index) in resources">
                                 <td>{{ index + 1 }}</td>
+                                <td v-if="data.category_id == 1">SubCon</td>
+                                <td v-else-if="data.category_id == 2">Others</td>
+                                <td v-else-if="data.category_id == 3">External Equipment</td>
+                                <td v-else-if="data.category_id == 4">Internal Equipment</td>
                                 <td class="tdEllipsis">{{ data.resource.code }} - {{ data.resource.name }}</td>
-                                <td class="tdEllipsis">{{ (data.resource.description) ? data.resource.description : '-' }}</td>
                                 <td class="tdEllipsis">{{ (data.trx_resource_code) ? data.trx_resource_code : '-' }}</td>
                                 <td class="tdEllipsis" v-show="data.status == null"> {{ 'NOT SELECTED' }}</td>
                                 <td class="tdEllipsis" v-show="data.status == ''"> {{ 'NOT SELECTED' }}</td>
                                 <td class="tdEllipsis" v-show="data.status == 1"> {{ 'IDLE' }}</td>
                                 <td class="tdEllipsis" v-show="data.status == 2"> {{ 'USED' }}</td>
-                                <td class="p-l-0" align="center"><a @click.prevent="addResource(data,index)" class="btn btn-primary btn-xs" href="#select_resource" data-toggle="modal">
+                                <td class="tdEllipsis" v-show="data.status == 3"> {{ 'MAINTENANCE' }}</td>
+                                <td class="tdEllipsis" v-show="data.status == 0"> {{ 'UNAVAIABLE' }}</td>
+                                <td class="p-l-0" align="center" v-if="data.status == null"><a class="btn btn-primary btn-xs" :href="goToAssign()" target="_blank">
+                                    <div class="btn-group">
+                                        SELECT
+                                    </div></a>
+                                </td>
+                                <td class="p-l-0" align="center" v-else="data.status == null"><a class="btn btn-primary btn-xs" disabled>
                                     <div class="btn-group">
                                         SELECT
                                     </div></a>
@@ -410,7 +420,7 @@
                 let isOk = false;
 
                 this.resources.forEach(resource => {
-                    if(resource.trx_resource_id == ""){
+                    if(resource.trx_resource_code == "-"){
                         isOk = true;
                     }
                 });
@@ -426,6 +436,12 @@
         methods: {
             tooltipText: function(text) {
                 return text
+            },
+            
+            goToAssign(){
+                url = "/resource_repair/assignResource";
+
+                return url;
             },
             openActDetails(data){
                 this.activityDetailMaterials = [];

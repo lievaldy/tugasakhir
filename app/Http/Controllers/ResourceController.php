@@ -553,21 +553,19 @@ class ResourceController extends Controller
             $resource_ref->resource_id = $data['resource_id'];
             $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->quantity = $data['quantity'];
-            if($data['category_id'] == 4){
-                if($data['resource_detail_id'] != "" && $data['resource_detail_id'] != null){
-                    $resource_ref->resource_detail_id = $data['resource_detail_id'];
-                    if($data['start_date'] != "" && $data['start_date'] != null && $data['end_date'] != "" && $data['end_date'] != null){
-                        $resource_ref->start_date = $data['start_date'];
-                        $resource_ref->end_date = $data['end_date'];
-                    }else{
-                        $resource_ref->start_date = null;
-                        $resource_ref->end_date = null;
-                    }
+            if($data['resource_detail_id'] != "" && $data['resource_detail_id'] != null){
+                $resource_ref->resource_detail_id = $data['resource_detail_id'];
+                if($data['start_date'] != "" && $data['start_date'] != null && $data['end_date'] != "" && $data['end_date'] != null){
+                    $resource_ref->start_date = $data['start_date'];
+                    $resource_ref->end_date = $data['end_date'];
                 }else{
-                    $resource_ref->resource_detail_id = null;
                     $resource_ref->start_date = null;
                     $resource_ref->end_date = null;
                 }
+            }else{
+                $resource_ref->resource_detail_id = null;
+                $resource_ref->start_date = null;
+                $resource_ref->end_date = null;
             }
 
             if(!$resource_ref->save()){

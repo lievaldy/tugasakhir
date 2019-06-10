@@ -169,8 +169,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Resource Name</th>
-                            <th width="30%">Description</th>
+                            <th width="35%">Category</th>
+                            <th width="35%">Resource</th>
+                            <th width="35%">Resource Detail</th>
                             <th width="30%">Quantity</th>
                         </tr>
                     </thead>
@@ -178,13 +179,28 @@
                         @foreach($modelRD as $RD)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                @if($RD->resourceDetail)
+                                    @if($RD->resourceDetail->category_id)
+                                        <td class="tdEllipsis">Internal</td>
+                                    @else
+                                        <td class="tdEllipsis">External</td>
+                                    @endif
+                                @else
+                                    <td class="tdEllipsis">-</td>
+                                @endif
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->code }} - {{ $RD->resource->name }}">{{ $RD->resource->code }} - {{ $RD->resource->name }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resource->description }}">{{ $RD->resource->description }}</td>
+                                @if($RD->resourceDetail)
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $RD->resourceDetail->code }}">{{ $RD->resourceDetail->code }}</td>
+                                @else
+                                    <td class="tdEllipsis">-</td>
+                                @endif
                                 <td>{{ $RD->quantity }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+
+                
             </div> <!-- /.box-body -->
 
             @if($route == "/production_order")
@@ -195,58 +211,7 @@
                 @csrf
             @verbatim
             <div id="production_order">
-                <div class="box-body">
-                    <h4 class="box-title m-t-0">Add Additional Material</h4>
-                    <table id="activity-table" class="table table-bordered tableFixed" style="border-collapse:collapse;">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%">No</th>
-                                <th style="width: 15%">Code</th>
-                                <th style="width: 35%">Description</th>
-                                <th style="width: 10%">Quantity</th>
-                                <th style="width: 10%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data,index) in datas">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.code }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
-                                <td class="tdEllipsis">{{ data.quantity }}</td>
-                                <td class="p-l-0 textCenter">
-                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
-                                        EDIT
-                                    </a>
-                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                        DELETE
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td class="p-l-10">{{newIndex}}</td>
-                                <td class="p-l-0 textLeft" colspan="2">
-                                    <selectize class="selectizeFull" v-model="dataInput.id" :settings="materialSettings" >
-                                        <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                    </selectize>  
-                                </td>
-                                <td class="p-l-0" v-if="dataInput.id != ''">
-                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
-                                </td>
-                                <td class="p-l-0" v-else>
-                                    <input class="form-control" :value="''" placeholder="Please Input Quantity" disabled> 
-                                </td>
-                                <td class="p-l-0 textCenter">
-                                    <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <div class="col-md-12 p-t-10 p-r-0">
-                        <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
-                    </div>
-                </div>
+                
 
                 <div class="modal fade" id="edit_item">
                     <div class="modal-dialog">
@@ -371,7 +336,9 @@
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
-
+                <div class="col-md-12 p-t-10 p-r-0">
+                    <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                </div>
             </div>
             @endverbatim
         </form>

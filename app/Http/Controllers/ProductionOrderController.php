@@ -324,7 +324,7 @@ class ProductionOrderController extends Controller
     public function releaseRepair(Request $request, $id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->get();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('ResourceTrx')->get();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $wbs = WBS::findOrFail($modelPrO->wbs_id);
 
@@ -349,6 +349,8 @@ class ProductionOrderController extends Controller
                         'allocated' => "",
                     ]);
                 }elseif($prOD->resource_id != ""){
+                    $modelTrx = ResourceTrx::find($prOD->trx_resource_id);
+                    // print_r($modelTrx->resourceDetail);exit();
                     $qty =  $prOD->quantity;
                     for ($x = 0; $x < $qty; $x++) {
                         $resources->push([
@@ -360,9 +362,11 @@ class ProductionOrderController extends Controller
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => '',
-                            "trx_resource_code" => null,
-                            "status" => null,
+                            "trx_resource_id" => $modelTrx->id,
+                            "resource_detail_id" => ($modelTrx->resourceDetail) ? $modelTrx->resourceDetail->id : null,
+                            "trx_resource_code" => ($modelTrx->resourceDetail) ? $modelTrx->resourceDetail->code : '-',
+                            "status" => ($modelTrx->resourceDetail) ? $modelTrx->resourceDetail->status : null,
+                            "category_id" => $modelTrx->category_id
                         ]);
                     } 
                 }
@@ -392,11 +396,11 @@ class ProductionOrderController extends Controller
         $modelSloc = StorageLocation::all();
         
         foreach ($modelPrOD as $prod_order_detail) {
-            foreach ($densities as $density) {
-                if($density->id == $prod_order_detail->material->density_id){
-                    $prod_order_detail->material['density'] = $density;
-                }
-            }
+            // foreach ($densities as $density) {
+            //     if($density->id == $prod_order_detail->material->density_id){
+            //         $prod_order_detail->material['density'] = $density;
+            //     }
+            // }
 
             $prod_order_detail['lengths'] = "";
             $prod_order_detail['width'] = "";
@@ -645,7 +649,6 @@ class ProductionOrderController extends Controller
                 }
 
             }
-            
             if(count($datas->resources) > 0){
                 foreach($datas->resources as $resource){
                     $existing = ProductionOrderDetail::where('production_order_id',$PrO->id)->where('resource_id' , $resource->id)->first();
@@ -660,6 +663,7 @@ class ProductionOrderController extends Controller
                         $PrOD->category_id = $resource->category_id;
                         $PrOD->production_order_id = $PrO->id;
                         $PrOD->resource_id = $resource->resource_id;
+                        $PrOD->resource_detail_id = $resource->resource_detail_id;
                         $PrOD->trx_resource_id = $resource->id;
                         $PrOD->quantity = $resource->quantity;
                         $PrOD->save();
@@ -794,14 +798,12 @@ class ProductionOrderController extends Controller
             $modelPrO->update();
 
             foreach($datas->resources as $resource){
-                $PrOD = new ProductionOrderDetail;
-                $PrOD->production_order_id = $pro_id;
-                $PrOD->production_order_detail_id = $resource->id;
+                $PrOD = ProductionOrderDetail::find($resource->id);
                 $PrOD->resource_id = $resource->resource_id;
-                $PrOD->resource_detail_id = $resource->trx_resource_id;
-                $PrOD->quantity = 1;
+                $PrOD->resource_detail_id = $resource->resource_detail_id;
+                $PrOD->trx_resource_id = $resource->trx_resource_id;
                 $PrOD->status = "UNACTUALIZED";
-                $PrOD->save();
+                $PrOD->update();
 
                 $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
                 $RD->status = 2;

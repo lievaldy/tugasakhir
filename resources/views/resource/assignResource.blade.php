@@ -164,14 +164,12 @@
                                                     <option v-for="(resource,index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.name }}</option>
                                                 </selectize>
                                             </div>
-                                            <template v-if="editInput.category_id == 4">
-                                                <div class="col-sm-12">
-                                                    <label class="control-label">Resource Detail</label>
-                                                    <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
-                                                        <option v-for="(resource,index) in selectedRDModal" :value="resource.id">{{ resource.code }}</option>
-                                                    </selectize>
-                                                </div>
-                                            </template>
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Resource Detail</label>
+                                                <selectize v-model="editInput.resource_detail_id" :settings="resourceDetailSettings">
+                                                    <option v-for="(resource,index) in selectedRDModal" :value="resource.id">{{ resource.code }}</option>
+                                                </selectize>
+                                            </div>
                                             <div class="col-sm-12">
                                                 <label class="control-label">WBS Name</label>
                                                 <selectize v-model="editInput.wbs_id" :settings="wbsSettings">
