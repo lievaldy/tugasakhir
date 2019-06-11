@@ -1514,6 +1514,8 @@ Route::name('production_order_repair.')->prefix('production_order_repair')->grou
     Route::get('/{id}', 'ProductionOrderController@show')->name('show')->middleware('can:show-production-order-repair');
 
     Route::get('/showConfirm/{id}', 'ProductionOrderController@show')->name('showConfirm')->middleware('can:show-production-order-repair');
+
+    Route::put('/updateActualResource', 'ProductionOrderController@updateActualResource')->name('updateActualResource')->middleware('can:confirm-production-order-repair');
 });
 
 //Yard Plan Routes

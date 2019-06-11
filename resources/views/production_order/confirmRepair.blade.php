@@ -443,8 +443,8 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="30%">Resource Name</th>
-                                        <th width="40%">Operational Resource</th>
+                                        <th width="30%">Resource</th>
+                                        <th width="40%">Resource Detail</th>
                                         <th width="15%">Status</th>
                                         <th width="10%"></th>
                                     </tr>
@@ -492,7 +492,7 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
+                                    <button type="button" class="btn btn-primary" :disabled="selectOk" data-dismiss="modal" @click.prevent="storeActualResource">SAVE</button>
                                 </div>
                             </div>
                         </div>
@@ -801,6 +801,16 @@
         havePredecessor : false,
         submittedForm : {
         },
+        dataInput:{
+            id : "",
+            schedule : "",
+            start : "",
+            end : "",
+            start_date : "",
+            end_date : "",
+            datetime_end : "",
+            datetime_start : "",
+        },
         editInput: {
             performance : "",
             performance_uom_id : "",
@@ -847,6 +857,33 @@
         el: '#production_order',
         data: data,
         mounted() {
+            $(function() {
+                $('input[name="daterange"]').daterangepicker({
+                    opens: 'left',
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    // minDate: moment(),
+                    timePickerIncrement: 30,
+                    showDropdowns: true,
+                    locale: {
+                        timePicker24Hour: true,
+                        format: 'DD-MM-YYYY hh:mm A'
+                    },
+                });
+                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+                    vm.dataInput.start = picker.startDate.format('HH:mm');
+                    vm.dataInput.end = picker.endDate.format('HH:mm');
+                    vm.dataInput.datetime_start = picker.startDate.format('YYYY-MM-DD HH:mm');
+                    vm.dataInput.datetime_end = picker.endDate.format('YYYY-MM-DD HH:mm');
+                    // vm.checkTime(vm.dataInput.start,vm.dataInput.end,vm.dataInput.datetime_start,vm.dataInput.datetime_end);
+                });
+                $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+                    vm.dataInput.start = '';
+                    vm.dataInput.end = '';
+                    $('input[name="daterange"]').val('');
+                });
+            });
+
             $('.datepicker').datepicker({
                 autoclose : true,
                 format: 'dd-mm-yyyy',
@@ -912,6 +949,39 @@
         },
         },
         methods: {
+            storeActualResource(){
+                let data = this.dataInput;
+                var url = "/production_order_repair/updateActualResource";
+
+                data = JSON.stringify(data);
+                window.axios.put(url,data).then((response) => {
+                    console.log(response);
+                    this.getNewResource();
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: "Resource Updated!",
+                        position: 'topRight',
+                    });
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: "Please try again.. ",
+                        position: 'topRight',
+                    });
+                    console.log(error);
+                })
+            },
+            getNewResource(){
+                window.axios.get('/api/getProdDetail/'+this.modelPrO.id).then(({ data }) => {
+                    this.resources = [];
+                    data.forEach(POD => {
+                        if(POD.resource_id != null && POD.resource_detail_id != null){
+                            this.resources.push(POD);
+                        }
+                    });
+                });
+            },
             openConfirmed(data){
                 this.active_material = data.material.description;
                 this.data_confirmed_material_show = [];
@@ -1018,8 +1088,73 @@
                 this.moraleNotes.subject = data.subject;
                 this.moraleNotes.notes = data.notes;
             },
+            buildDateRangePicker(){
+                $(function() {
+                    let startDate = moment(vm.dataInput.start_date).format('DD-MM-YYYY HH:mm');
+                    let endDate = moment(vm.dataInput.end_date).format('DD-MM-YYYY HH:mm');
+
+                    if(startDate != "Invalid date"){
+                        $('input[name="daterange"]').daterangepicker({
+                            startDate : startDate,
+                            endDate: endDate,
+                            opens: 'center',
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            timePickerIncrement: 30,
+                            showDropdowns: true,
+                            locale: {
+                                timePicker24Hour: true,
+                                format: 'DD-MM-YYYY hh:mm A'
+                            },
+                            drops: "down"
+                        });
+                    }else{
+                        $('input[name="daterange"]').daterangepicker({
+                            autoUpdateInput: false,
+                            opens: 'center',
+                            timePicker: true,
+                            timePicker24Hour: true,
+                            minDate: moment(),
+                            timePickerIncrement: 30,
+                            showDropdowns: true,
+                            locale: {
+                                timePicker24Hour: true,
+                                format: 'DD-MM-YYYY hh:mm A'
+                            },
+                            drops: "down"
+                        });
+                    }
+                    $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+                        vm.dataInput.start = picker.startDate.format('HH:mm');
+                        vm.dataInput.end = picker.endDate.format('HH:mm');
+                        vm.dataInput.datetime_start = picker.startDate.format('YYYY-MM-DD HH:mm');
+                        vm.dataInput.datetime_end = picker.endDate.format('YYYY-MM-DD HH:mm');
+                        // var validation = vm.checkTime(vm.dataInput.start,vm.dataInput.end,vm.dataInput.datetime_start,vm.dataInput.datetime_end);
+                        // if(validation === true){
+                            $(this).val(picker.startDate.format('DD-MM-YYYY hh:mm A') + ' - ' + picker.endDate.format('DD-MM-YYYY hh:mm A'));
+                        // }
+                    });
+                    $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+                        vm.dataInput.start = '';
+                        vm.dataInput.end = '';
+                        vm.dataInput.start_date = '';
+                        vm.dataInput.end_date = '';
+                        vm.dataInput.datetime_start = '';
+                        vm.dataInput.datetime_end = '';
+                        $('input[name="daterange"]').val('');
+                    });
+                });
+            },
             openEditModal(data,index){
                 this.clearEditInput();
+                $('input[name="daterange"]').val('');
+                this.dataInput.id = data.id;
+                this.dataInput.start_date = data.start_date;
+                this.dataInput.end_date = data.end_date;
+                this.dataInput.datetime_start = data.start_date;
+                this.dataInput.datetime_end = data.end_date;
+                this.buildDateRangePicker();
+
                 this.editInput.index = index;
                 this.editInput.performance = data.performance;
                 this.editInput.category_id = data.resource_detail.category_id;

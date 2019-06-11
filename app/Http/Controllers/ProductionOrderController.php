@@ -1542,6 +1542,11 @@ class ProductionOrderController extends Controller
         return response(Resource::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
+    public function getProdDetailApi($id){
+
+        return response(ProductionOrderDetail::where('production_order_id',$id)->with('material','material.uom','material.dimensionUom','resource','service','productionOrder','resourceDetail','dimensionUom','productionOrderDetails.dimensionUom')->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
     public function getServiceAPI($id){
 
         return response(Service::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
@@ -1603,5 +1608,29 @@ class ProductionOrderController extends Controller
 		$mr_number = $year+$number;
         $mr_number = 'MR-'.$mr_number;
 		return $mr_number;
+    }
+
+    public function updateActualResource(Request $request){
+        $data = $request->json()->all();
+
+        DB::beginTransaction();
+        try {
+            $modelPOD = ProductionOrderDetail::find($data['id']);
+            $modelPOD->start_date = ($data['datetime_start'] != "") ? $data['datetime_start'] : null;
+            $modelPOD->end_date = ($data['datetime_end'] != "") ? $data['datetime_end'] : null;
+            if($modelPOD->start_date == null || $modelPOD->end_date == null){
+                $modelPOD->status = 'UNACTUALIZED';
+            }else{
+                $modelPOD->status = 'ACTUALIZED';
+            }
+            $modelPOD->update();
+
+            DB::commit();
+            return response(json_encode($modelPOD),Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('production_order_detail.confirm',$id)->with('error', $e->getMessage());
+        }
     }
 }

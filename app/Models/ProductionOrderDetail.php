@@ -30,7 +30,7 @@ class ProductionOrderDetail extends Model
 
     public function resourceTrx()
     {
-        return $this->belongsTo('App\Models\ResourceTrx');
+        return $this->belongsTo('App\Models\ResourceTrx','trx_resource_id');
     }
 
     public function productionOrderDetails()

@@ -254,7 +254,61 @@
                                             <a href="#edit_info" class="btn btn-primary btn-sm pull-right" data-toggle="modal" @click="openEditModal(data.category_id)">EDIT INFORMATION</a>
                                         </div>
                                     </div>
+                                    <template v-if="data.prod_order_detail.length > 0">
+                                        <div class="box-body p-l-0 p-b-0">
+                                            <h4>Usage History</h4>
+                                        </div>
+                                        <template v-for="prod_order_detail in data.prod_order_detail">
+                                            <div class="box box-solid box-default">
+                                                <div class="box-body">
+                                                    <div class="col-lg-4 no-padding">
+                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Information</b></div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">WBS</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.wbs.code}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Prod. Order</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.number}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Status</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{prod_order_detail.production_order.prod_order_status}}</b></div>
+                                                        </div>
+                                                    </div>
 
+                                                    <div class="col-lg-4 no-padding">
+                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Planned</b></div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.resource_trx != null) ? prod_order_detail.resource_trx.start_date : '-'}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.resource_trx != null) ? prod_order_detail.resource_trx.end_date : '-'}}</b></div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    
+                                                    <div class="col-lg-4 no-padding">
+                                                        <div class="col-md-12 col-xs-12 no-padding"><b>Actual</b></div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.start_date != null) ? prod_order_detail.start_date : '-'}}</b></div>
+                                                        </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">End Date</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.end_date != null) ? prod_order_detail.end_date : '-'}}</b></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="modal fade" id="edit_info">
                         <div class="modal-dialog">
@@ -981,6 +1035,7 @@
                         });
                         let average = (performance / usage).toFixed(2);
                         this.data.prod_order_detail = RD.production_order_details;
+                        console.log(RD.production_order_details);
                         if(RD.production_order_details[0].performance_uom_id != null){
                             this.data.total_performance = average+' '+RD.production_order_details[0].performance_uom.unit+' /hour';
                         }
