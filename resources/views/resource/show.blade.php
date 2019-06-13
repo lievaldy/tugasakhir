@@ -4,7 +4,7 @@
     @if($route == "/resource")
         @breadcrumb(
             [
-                'title' => 'Resource Monitoring',
+                'title' => 'Resource Detail',
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Resources' => route('resource.index'),
@@ -16,7 +16,7 @@
     @elseif($route == "/resource_repair")
         @breadcrumb(
             [
-                'title' => 'Resource Monitoring',
+                'title' => 'Resource Detail',
                 'items' => [
                     'Dashboard' => route('index'),
                     'View All Resources' => route('resource_repair.index'),
