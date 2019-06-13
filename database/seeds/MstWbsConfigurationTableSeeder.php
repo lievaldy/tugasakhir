@@ -22,7 +22,7 @@ class MstWbsConfigurationTableSeeder extends Seeder
                 'id' => 1,
                 'number' => 'Docking',
             'description' => 'Docking (Pengedokan)',
-                'deliverables' => 'Docking',
+                'deliverables' => 'Docking/Undocking',
                 'duration' => 40,
                 'wbs_id' => NULL,
                 'user_id' => 3,
