@@ -742,7 +742,9 @@
                     datas.push(resource_code,po_number);
                     datas = JSON.stringify(datas);
 
+                    // console.log(datas);
                     window.axios.get('/api/generateCodeGrResource/'+datas).then(({ data }) => {
+                        console.log(data);
                         this.editInput.code = data;
                         this.submitData.forEach(dataSubmit => {
                             if(dataSubmit.code == data){

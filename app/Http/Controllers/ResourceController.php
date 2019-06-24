@@ -867,7 +867,7 @@ class ResourceController extends Controller
 
         $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
         if($modelRD){
-            $number += intval(substr($modelRD->code,19));
+            $number += intval(substr($modelRD->code,18));
         }
         $code = $data[0].'-'.$data[1].'-'.$number;
 
