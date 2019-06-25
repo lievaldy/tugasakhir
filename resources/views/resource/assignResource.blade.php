@@ -375,6 +375,7 @@
         months : ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "August", "Sept", "Oct", "Nov", "Dec"],
         selectedRDModal : [],
         resourceTrx : [],
+        RDCheck : [],
     }
 
     var vm = new Vue({
@@ -460,7 +461,6 @@
         },
         methods : {
             deleteResource(data){
-                console.log(data);
                 var routeTmp = this.route;
                 iziToast.question({
                     close: false,
@@ -721,7 +721,6 @@
             },
             add(){
                 $('div.overlay').show();            
-
                 window.axios.get('/api/getAllResourceTrx').then(({ data }) => {
                     this.resourceTrx = data;
                     let status = false;
@@ -753,50 +752,173 @@
                         });
                         $('div.overlay').hide();            
                     }else{
-                        this.dataInput.project_id = this.project_id;
-                        var dataInput = this.dataInput;
-                        dataInput = JSON.stringify(dataInput);
-                        if(this.route == "/resource"){
-                            var url = "{{ route('resource.storeAssignResource') }}";
-                        }else if(this.route == "/resource_repair"){
-                            var url = "{{ route('resource_repair.storeAssignResource') }}";
-                        }
-                        window.axios.post(url,dataInput).then((response) => {
-                            if(response.data.error != undefined){
+                        let statusExternal = false;
+
+                        if(this.dataInput.category_id == 3){
+                            this.resourceDetails.forEach(RD =>{
+                                if(RD.id == this.dataInput.resource_detail_id){
+                                    this.RDCheck = RD;
+                                    if(this.dataInput.end_date > this.RDCheck.return_date){
+                                        statusExternal = true;
+                                    }
+                                }
+                            })
+
+                            if(statusExternal){
                                 iziToast.warning({
-                                    displayMode: 'replace',
-                                    title: response.data.error,
+                                    title: 'Cannot use more than '+this.RDCheck.return_date,
                                     position: 'topRight',
+                                    displayMode: 'replace'
                                 });
-                                $('div.overlay').hide();            
+                                $('div.overlay').hide();   
                             }else{
-                                iziToast.success({
-                                    displayMode: 'replace',
-                                    title: response.data.response,
-                                    position: 'topRight',
-                                });
-                                $('div.overlay').hide();            
+                                let statusWBS = false;
+                                let modelWBS = Object.values(this.modelWBS);
+                                modelWBS.forEach(WBS =>{
+                                    if(WBS.id == this.dataInput.wbs_id){
+                                        if(WBS.planned_start_date > this.dataInput.start_date){
+                                            statusWBS = true;
+
+                                            iziToast.warning({
+                                                title: 'Start date cannot less than '+WBS.planned_start_date,
+                                                position: 'topRight',
+                                                displayMode: 'replace'
+                                            });
+                                        }else{
+                                            if(WBS.planned_end_date < this.dataInput.end_date){
+                                                statusWBS = true;
+
+                                                iziToast.warning({
+                                                    title: 'End date cannot more than '+WBS.planned_end_date,
+                                                    position: 'topRight',
+                                                    displayMode: 'replace'
+                                                });
+                                            }
+                                        }
+                                    }
+                                })
+                                if(statusWBS){
+                                    $('div.overlay').hide();   
+                                }else{
+                                    this.dataInput.project_id = this.project_id;
+                                    var dataInput = this.dataInput;
+                                    dataInput = JSON.stringify(dataInput);
+                                    if(this.route == "/resource"){
+                                        var url = "{{ route('resource.storeAssignResource') }}";
+                                    }else if(this.route == "/resource_repair"){
+                                        var url = "{{ route('resource_repair.storeAssignResource') }}";
+                                    }
+                                    window.axios.post(url,dataInput).then((response) => {
+                                        if(response.data.error != undefined){
+                                            iziToast.warning({
+                                                displayMode: 'replace',
+                                                title: response.data.error,
+                                                position: 'topRight',
+                                            });
+                                            $('div.overlay').hide();            
+                                        }else{
+                                            iziToast.success({
+                                                displayMode: 'replace',
+                                                title: response.data.response,
+                                                position: 'topRight',
+                                            });
+                                            $('div.overlay').hide();            
+                                        }
+                                        
+                                        this.getResource();
+                                        this.dataInput.resource_id = "";
+                                        this.dataInput.resource_detail_id = "";
+                                        this.dataInput.wbs_id = "";             
+                                        this.dataInput.quantity = ""; 
+                                        this.dataInput.category_id = ""; 
+                                        this.dataInput.start = '';
+                                        this.dataInput.end = '';
+                                        this.dataInput.start_date = '';
+                                        this.dataInput.end_date = '';
+                                        this.dataInput.datetime_start = '';
+                                        this.dataInput.datetime_end = '';
+                                        $('#input_schedule').modal('hide');
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    })
+                                }
                             }
-                            
-                            this.getResource();
-                            this.dataInput.resource_id = "";
-                            this.dataInput.resource_detail_id = "";
-                            this.dataInput.wbs_id = "";             
-                            this.dataInput.quantity = ""; 
-                            this.dataInput.category_id = ""; 
-                            this.dataInput.start = '';
-                            this.dataInput.end = '';
-                            this.dataInput.start_date = '';
-                            this.dataInput.end_date = '';
-                            this.dataInput.datetime_start = '';
-                            this.dataInput.datetime_end = '';
-                            $('#input_schedule').modal('hide');
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            $('div.overlay').hide();            
-                        })
+                        }else{
+                            let statusWBS = false;
+                            let modelWBS = Object.values(this.modelWBS);
+                            modelWBS.forEach(WBS =>{
+                                if(WBS.id == this.dataInput.wbs_id){
+                                    if(WBS.planned_start_date > this.dataInput.start_date){
+                                        statusWBS = true;
+
+                                        iziToast.warning({
+                                            title: 'Start date cannot less than '+WBS.planned_start_date,
+                                            position: 'topRight',
+                                            displayMode: 'replace'
+                                        });
+                                    }else{
+                                        if(WBS.planned_end_date < this.dataInput.end_date){
+                                            statusWBS = true;
+
+                                            iziToast.warning({
+                                                title: 'End date cannot more than '+WBS.planned_end_date,
+                                                position: 'topRight',
+                                                displayMode: 'replace'
+                                            });
+                                        }
+                                    }
+                                }
+                            })
+                            if(statusWBS){
+                                $('div.overlay').hide();   
+                            }else{
+                                this.dataInput.project_id = this.project_id;
+                                var dataInput = this.dataInput;
+                                dataInput = JSON.stringify(dataInput);
+                                if(this.route == "/resource"){
+                                    var url = "{{ route('resource.storeAssignResource') }}";
+                                }else if(this.route == "/resource_repair"){
+                                    var url = "{{ route('resource_repair.storeAssignResource') }}";
+                                }
+                                window.axios.post(url,dataInput).then((response) => {
+                                    if(response.data.error != undefined){
+                                        iziToast.warning({
+                                            displayMode: 'replace',
+                                            title: response.data.error,
+                                            position: 'topRight',
+                                        });
+                                        $('div.overlay').hide();            
+                                    }else{
+                                        iziToast.success({
+                                            displayMode: 'replace',
+                                            title: response.data.response,
+                                            position: 'topRight',
+                                        });
+                                        $('div.overlay').hide();            
+                                    }
+                                    
+                                    this.getResource();
+                                    this.dataInput.resource_id = "";
+                                    this.dataInput.resource_detail_id = "";
+                                    this.dataInput.wbs_id = "";             
+                                    this.dataInput.quantity = ""; 
+                                    this.dataInput.category_id = ""; 
+                                    this.dataInput.start = '';
+                                    this.dataInput.end = '';
+                                    this.dataInput.start_date = '';
+                                    this.dataInput.end_date = '';
+                                    this.dataInput.datetime_start = '';
+                                    this.dataInput.datetime_end = '';
+                                    $('#input_schedule').modal('hide');
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                })
+                            }
+                        }
                     }
+                    $('div.overlay').hide();
                 });
             },
             update(){
