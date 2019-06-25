@@ -114,7 +114,7 @@
                                         <div class="col-sm-12">
                                             <textarea class="form-control" rows="3" v-model="description"></textarea>
                                         </div>
-                                        <div class="col-sm-12 p-t-5" v-if="modelPR.type != 3">
+                                        <div class="col-sm-12 p-t-5" v-if="modelPR.type != 2">
                                             <a class="btn btn-primary btn-xs pull-right" data-toggle="modal" href="#vendor_list" @click.prevent="vendor_list">
                                                 VENDOR LIST
                                             </a>

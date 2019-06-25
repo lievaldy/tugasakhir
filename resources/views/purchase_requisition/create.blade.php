@@ -62,7 +62,6 @@
                                             <th style="width: 8%">Unit</th>
                                             <th style="width: 15%">Project Number</th>
                                             <th style="width: 13%">Required Date</th>
-                                            <th style="width: 15%">Allocation</th>
                                             <th style="width: 13%"></th>
                                         </tr>
                                     </thead>
@@ -81,7 +80,6 @@
                                             <td class="tdEllipsis">{{ data.unit }}</td>
                                             <td class="tdEllipsis">{{ data.project_number }}</td>
                                             <td class="tdEllipsis">{{ data.required_date }}</td>
-                                            <td class="tdEllipsis">{{ data.alocation }}</td>
                                             <td class="p-l-0 textCenter">
                                                 <a v-if="pr_type == 'Material'" class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(data,index)">
                                                     EDIT
@@ -122,12 +120,7 @@
                                             <td class="p-l-0 textLeft">
                                                 <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
                                             </td>
-                                            <td class="p-l-0 textLeft">
-                                                <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
-                                                    <option value="Consumption">Consumption</option>
-                                                    <option value="Stock">Stock</option>
-                                                </selectize>
-                                            </td>
+                                            
                                             <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
