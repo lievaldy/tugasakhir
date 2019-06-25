@@ -66,10 +66,11 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="25%">Code</th>
-                                    <th width="30%">Brand</th>
+                                    <th width="20%">Code</th>
+                                    <th width="20%">Brand</th>
                                     <th width="15%">Type</th>
-                                    <th width="15%">Status</th>
+                                    <th width="11%">Status</th>
+                                    <th width="10%">Used In</th>
                                     <th width="10%"></th>
                                 </tr>
                             </thead>
@@ -87,6 +88,14 @@
                                     <td v-else-if="rd.status == 2">USED</td>
                                     <td v-else-if="rd.status == 0">UNAVAILABLE</td>
                                     <td v-else-if="rd.status == 3">MAINTENANCE</td>
+                                    <td v-if="rd.status == 2">
+                                        <a @click.prevent="showUsageDetail(rd)" class="btn btn-primary btn-xs">
+                                            <div class="btn-group">
+                                                USAGE DETAIL
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td v-else>-</td>
                                     <td>
                                         <a @click.prevent="showDetail(rd.id)" class="btn btn-primary btn-xs">
                                             <div class="btn-group">
@@ -300,6 +309,10 @@
                                                             <div class="col-md-4 col-xs-4 no-padding">End Date</div>
                                                             <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.end_date != null) ? prod_order_detail.end_date : '-'}}</b></div>
                                                         </div>
+                                                        <div class="col-md-12 col-xs-12 no-padding">
+                                                            <div class="col-md-4 col-xs-4 no-padding">Difference</div>
+                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ prod_order_detail.diffDays }}</b></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -310,6 +323,35 @@
                         </div>
                     </div>
 
+                    <div class="modal fade" id="usage_detail">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">View Usage Detail</h4>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <label for="project" class="control-label">Project</label>
+                                    <input type="text" id="project" v-model="usage.project" class="form-control" disabled>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <label for="wbs" class="control-label">WBS</label>
+                                    <input type="text" id="wbs" v-model="usage.wbs" class="form-control" disabled>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <label for="planned_start" class="control-label">Planned Start Date</label>
+                                    <input type="text" id="planned_start" v-model="usage.planned_start" class="form-control" disabled>
+                                </div>
+                                <div class="modal-body p-t-0">
+                                    <label for="planned_end" class="control-label">Planned End Date</label>
+                                    <input type="text" id="planned_end" v-model="usage.planned_end" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            
                     <div class="modal fade" id="edit_info">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -616,7 +658,14 @@
         depreciation_methods : @json($depreciation_methods),
         resource_categories : @json($resource_categories),
         uom :   @json($uom),
+        pod : @json($POD),
         category : "",
+        usage : {
+            project : "",
+            wbs : "",
+            planned_start : "",
+            planned_end : "",
+        },
         data:{
             category_id : "",
             selectedId : "",
@@ -964,6 +1013,20 @@
             this.data.manufactured_in = ""
             
         },
+        showUsageDetail(rd){
+            $('#usage_detail').modal();
+            this.pod.forEach(pod_data =>{
+                if(pod_data.resource_detail_id == rd.id){
+                    if(pod_data.status == "UNACTUALIZED"){
+                        console.log(pod_data);
+                        this.usage.project = pod_data.production_order.project.number;
+                        this.usage.wbs = pod_data.production_order.wbs.code + " - " +pod_data.production_order.wbs.deliverables;
+                        this.usage.planned_start = pod_data.resource_trx.start_date;
+                        this.usage.planned_end = pod_data.resource_trx.end_date;
+                    }
+                }
+            })
+        },
         showDetail(id){
             $('div.overlay').show();
             this.clearData();
@@ -1023,19 +1086,46 @@
                     let usage = 0;
                     if(RD.production_order_details.length > 0){
                         RD.production_order_details.forEach(prodOrderDetail =>{
-                            if(prodOrderDetail.production_order.status == 0){
-                                prodOrderDetail.production_order.prod_order_status = "COMPLETED";
-                            }else if(prodOrderDetail.production_order.status == 1){
-                                prodOrderDetail.production_order.prod_order_status = "UNRELEASED";
-                            }else if(prodOrderDetail.production_order.status == 2){
-                                prodOrderDetail.production_order.prod_order_status = "RELEASED";
-                            }
+                            
                             performance += prodOrderDetail.performance;
                             usage += prodOrderDetail.usage;
                         });
                         let average = (performance / usage).toFixed(2);
-                        this.data.prod_order_detail = RD.production_order_details;
-                        console.log(RD.production_order_details);
+
+                        this.pod.forEach(pod_data =>{
+                            RD.production_order_details.forEach(prod=>{
+                                if(pod_data.id == prod.id){
+                                    if(pod_data.production_order.status == 0){
+                                        pod_data.production_order.prod_order_status = "COMPLETED";
+                                    }else if(pod_data.production_order.status == 1){
+                                        pod_data.production_order.prod_order_status = "UNRELEASED";
+                                    }else if(pod_data.production_order.status == 2){
+                                        pod_data.production_order.prod_order_status = "RELEASED";
+                                    }
+                                    let planned_end_date = "";
+                                    let actual_end_date = "";
+                                    let string = "";
+                                    if(pod_data.end_date != null && pod_data.end_date != ""){
+                                        actual_end_date = new Date(pod_data.end_date);
+                                        planned_end_date = new Date(pod_data.resource_trx.end_date);
+
+                                        if(planned_end_date.getTime() < actual_end_date.getTime()){
+                                            string += "Late ";
+                                        }else{
+                                            string += "Ahead ";
+                                        }
+                                        let diffTime = Math.abs(planned_end_date.getTime() - actual_end_date.getTime());
+                                        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                                        string += diffDays + " Day(s)";
+                                    }else{
+                                        string = "-";
+                                    }
+                                    pod_data.diffDays = string;
+                                    this.data.prod_order_detail.push(pod_data);
+                                }
+                            })
+                        });
+
                         if(RD.production_order_details[0].performance_uom_id != null){
                             this.data.total_performance = average+' '+RD.production_order_details[0].performance_uom.unit+' /hour';
                         }
@@ -1174,7 +1264,12 @@
                 }
             }
         }
-    }
+    },
+    created() {
+        this.modelRD.forEach(RD =>{
+
+        });
+    },
     });
 
 </script>

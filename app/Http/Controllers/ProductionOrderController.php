@@ -805,7 +805,7 @@ class ProductionOrderController extends Controller
                 $PrOD->status = "UNACTUALIZED";
                 $PrOD->update();
 
-                $RD = ResourceDetail::findOrFail($resource->trx_resource_id);
+                $RD = ResourceDetail::findOrFail($resource->resource_detail_id);
                 $RD->status = 2;
                 $RD->update();
             }

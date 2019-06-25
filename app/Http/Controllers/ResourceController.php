@@ -409,12 +409,17 @@ class ResourceController extends Controller
     {
         $route = $request->route()->getPrefix();
         $resource = Resource::findOrFail($id);
-        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail','productionOrderDetails.resourceTrx')->get()->jsonSerialize();
+        $modelRD = ResourceDetail::where('resource_id',$id)->with('goodsReceiptDetail.goodsReceipt.purchaseOrder','performanceUom','productionOrderDetails.productionOrder.wbs','productionOrderDetails.performanceUom','productionOrderDetails.resourceDetail','productionOrderDetails.productionOrder.project','productionOrderDetails.resourceTrx')->get();
+        $id = [];
+        foreach($modelRD as $RD){
+            array_push($id,$RD->id);
+        }
+        $POD = ProductionOrderDetail::orderBy('end_date','desc')->whereIn('resource_detail_id',$id)->with('productionOrder.project','productionOrder.wbs','performanceUom','resourceDetail','resourceTrx')->get();
         $depreciation_methods = Configuration::get('depreciation_methods');
         $resource_categories = Configuration::get('resource_category');
         $uom = Uom::all();
-                
-        return view('resource.show', compact('resource','modelRD','route','depreciation_methods','resource_categories','uom'));
+         
+        return view('resource.show', compact('resource','modelRD','route','depreciation_methods','resource_categories','uom','POD'));
     }
 
     public function updateDetail(Request $request)
@@ -867,7 +872,7 @@ class ResourceController extends Controller
 
         $modelRD = ResourceDetail::orderBy('code','desc')->where('code','like',$code.'%')->first();
         if($modelRD){
-            $number += intval(substr($modelRD->code,19));
+            $number += intval(substr($modelRD->code,18));
         }
         $code = $data[0].'-'.$data[1].'-'.$number;
 
