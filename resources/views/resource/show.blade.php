@@ -302,16 +302,16 @@
                                                     <div class="col-lg-4 no-padding">
                                                         <div class="col-md-12 col-xs-12 no-padding"><b>Actual</b></div>
                                                         <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Start Date</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.start_date != null) ? prod_order_detail.start_date : '-'}}</b></div>
+                                                            <div class="col-md-5 col-xs-4 no-padding">Start Date</div>
+                                                            <div class="col-md-6 col-xs-8 no-padding"><b>: {{ (prod_order_detail.start_date != null) ? prod_order_detail.start_date : '-'}}</b></div>
                                                         </div>
                                                         <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">End Date</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ (prod_order_detail.end_date != null) ? prod_order_detail.end_date : '-'}}</b></div>
+                                                            <div class="col-md-5 col-xs-4 no-padding">End Date</div>
+                                                            <div class="col-md-6 col-xs-8 no-padding"><b>: {{ (prod_order_detail.end_date != null) ? prod_order_detail.end_date : '-'}}</b></div>
                                                         </div>
                                                         <div class="col-md-12 col-xs-12 no-padding">
-                                                            <div class="col-md-4 col-xs-4 no-padding">Difference</div>
-                                                            <div class="col-md-8 col-xs-8 no-padding"><b>: {{ prod_order_detail.diffDays }}</b></div>
+                                                            <div class="col-md-5 col-xs-4 no-padding">End Date Difference</div>
+                                                            <div class="col-md-6 col-xs-8 no-padding" :style="bgcolor(prod_order_detail)"><b>: {{ prod_order_detail.diffDays }}</b></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -824,6 +824,9 @@
         );
     },
     methods : {
+        bgcolor(pod){
+            return "background-color:"+pod.color + ";color:white"
+        },
         getRSD(){
             window.axios.get('/api/getNewResourceDetail/'+this.data.resource_id).then(({ data }) => {
                 this.data.selectedId = "";
@@ -1111,8 +1114,10 @@
 
                                         if(planned_end_date.getTime() < actual_end_date.getTime()){
                                             string += "Late ";
+                                            pod_data.color = "red";
                                         }else{
                                             string += "Ahead ";
+                                            pod_data.color = "green";
                                         }
                                         let diffTime = Math.abs(planned_end_date.getTime() - actual_end_date.getTime());
                                         let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
